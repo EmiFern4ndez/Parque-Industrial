@@ -1,73 +1,29 @@
-# React + TypeScript + Vite
+# 🏭 Portal Parque Industrial Viedma
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Esta es una plataforma web moderna y funcional desarrollada para la **Municipalidad de Viedma**. El objetivo principal es centralizar la información del Parque Industrial y digitalizar el proceso de **Solicitud de Radicación** para empresas y emprendimientos rionegrinos.
 
-Currently, two official plugins are available:
+## ✨ Características Principales
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+*   **Interfaz de Alto Impacto:** Diseño profesional con un Hero dinámico y tipografía moderna.
+*   **Navbar Inteligente:** Barra de navegación con efecto "Glassmorphism" que cambia de transparencia y color (de blanco a oscuro) al hacer scroll para optimizar la legibilidad.
+*   **Modo Oscuro Nativo:** Soporte completo para Dark Mode que se sincroniza con las preferencias del sistema o elección del usuario.
+*   **Geolocalización con Leaflet:** Mapa interactivo integrado mediante OpenStreetMap (sin APIs de pago) que incluye un filtro visual para adaptarse al modo oscuro.
+*   **Integración con Supabase:** Formulario de contacto vinculado directamente a una base de datos PostgreSQL en la nube para gestionar las solicitudes de radicación en tiempo real.
+*   **Diseño Responsivo:** Optimización total para dispositivos móviles, tablets y computadoras de escritorio.
 
-## React Compiler
+## 🛠️ Tecnologías Utilizadas
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+*   **Frontend:** React 18 + TypeScript.
+*   **Bundler:** Vite (para una velocidad de desarrollo superior).
+*   **Estilos:** Tailwind CSS con animaciones personalizadas.
+*   **Iconografía:** Lucide React.
+*   **Mapas:** Leaflet + React-Leaflet.
+*   **Backend / DB:** Supabase (PostgreSQL).
 
-## Expanding the ESLint configuration
+## 🚀 Configuración del Proyecto
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### 1. Clonar e Instalar
+```bash
+git clone [tu-repositorio-url]
+cd parque-industrial-viedma
+npm install
