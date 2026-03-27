@@ -26,7 +26,7 @@ export const Navbar = () => {
         
         {/* Logo y Nombre */}
         <div className="flex items-center gap-2">
-          <img src="/favicon-32x32.png" alt="Logo" className="w-8 h-8" />
+          <img src="favicon-32x32.png" alt="Logo" className="w-8 h-8" />
           <span className={`text-xl font-bold transition-colors duration-300 ${
             isScrolled 
               ? 'text-slate-900 dark:text-white' 
