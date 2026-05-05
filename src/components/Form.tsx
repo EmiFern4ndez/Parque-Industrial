@@ -1,119 +1,149 @@
-import { Building2, User, FileText, Mail, Phone, Tag, CheckCircle } from 'lucide-react';
-import { useState } from 'react';
-import { supabase } from '../lib/supabase';
+import React, { useState } from 'react';
 
 export const Form = () => {
-  const [loading, setLoading] = useState(false);
-  const [enviado, setEnviado] = useState(false);
+  const [formData, setFormData] = useState({
+    razonSocial: '',
+    cuit: '',
+    rubro: '',
+    tipoEmpresa: 'existente',
+    personalAOcupar: '',
+    contactoNombre: '',
+    email: '',
+    telefono: '',
+    descripcionProyecto: '',
+    superficieRequerida: '', // Inicia vacío para el guion
+  });
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setLoading(true);
-
-    const formData = new FormData(e.currentTarget);
-    const datos = Object.fromEntries(formData.entries());
-
-    const { error } = await supabase
-      .from('solicitudes')
-      .insert([
-        {
-          razon_social: datos.razon_social,
-          cuit: datos.cuit,
-          representante: datos.representante,
-          rubro: datos.rubro,
-          email: datos.email,
-          telefono: datos.telefono,
-          estado: 'pendiente'
-        }
-      ]);
-
-    setLoading(false);
-
-    if (error) {
-      console.error("Error:", error);
-      alert("Hubo un error al enviar la solicitud: " + error.message);
-    } else {
-      setEnviado(true);
-    }
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Pantalla de Éxito (Dark Mode Ready)
-  if (enviado) {
-    return (
-      <section className="py-24 px-6 text-center bg-white dark:bg-slate-950 transition-colors">
-        <div className="max-w-md mx-auto p-10 bg-green-50 dark:bg-green-900/20 rounded-3xl border border-green-200 dark:border-green-800 shadow-xl">
-          <div className="flex justify-center mb-4 text-green-600 dark:text-green-400">
-            <CheckCircle size={60} />
-          </div>
-          <h2 className="text-3xl font-bold text-green-800 dark:text-green-400 mb-4">¡Solicitud Enviada!</h2>
-          <p className="text-green-700 dark:text-green-300 mb-6 font-medium">
-            Los datos se han registrado correctamente en el sistema del Parque Industrial Viedma.
-          </p>
-          <button 
-            onClick={() => setEnviado(false)}
-            className="px-6 py-2 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700 transition-all"
-          >
-            Enviar otra solicitud
-          </button>
-        </div>
-      </section>
-    );
-  }
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log("Datos de solicitud de ingreso (GPIV):", formData);
+  };
+
+  // CSS para limpiar inputs: sin flechas en números y estilizado para modo oscuro
+  const inputClasses = `
+    mt-1 block w-full rounded-xl border border-slate-200 dark:border-slate-800 
+    bg-slate-50 dark:bg-slate-900/50 text-slate-900 dark:text-white shadow-sm 
+    focus:ring-2 focus:ring-green-500 focus:border-transparent p-3 transition-all outline-none
+    [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none
+  `;
+
+  // CSS para selects: flecha personalizada y cursor pointer
+  const selectClasses = `
+    ${inputClasses} cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800/80
+    bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22none%22%20viewBox%3D%220%200%2020%2020%22%3E%3Cpath%20stroke%3D%22%236b7280%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%221.5%22%20d%3D%22m6%208%204%204%204-4%22%2F%3E%3C%2Fsvg%3E')] 
+    bg-[length:1.25rem_1.25rem] bg-[right_0.75rem_center] bg-no-repeat pr-10 appearance-none
+  `;
+
+  const labelClasses = "block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1 ml-1";
 
   return (
-    <section id="contacto" className="py-24 px-6 bg-slate-200 dark:bg-slate-950 transition-colors duration-500">
-      <div className="max-w-5xl mx-auto">
-        <div className="p-8 md:p-14 rounded-[2.5rem] shadow-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 transition-all">
-          
-          <div className="mb-10 text-center md:text-left">
-            <h2 className="text-4xl font-black text-slate-900 dark:text-white mb-3 tracking-tight">
-              Solicitud de <span className="text-green-600 dark:text-green-500 italic">Radicación</span>
-            </h2>
-            <p className="text-slate-500 dark:text-slate-400 text-lg">
-              Iniciá el trámite para instalar tu empresa en el parque.
-            </p>
-          </div>
-          
-          <form className="grid md:grid-cols-2 gap-x-8 gap-y-6" onSubmit={handleSubmit}>
-            {[
-              { label: "Razón Social", name: "razon_social", icon: Building2, placeholder: "Nombre empresa" },
-              { label: "CUIT", name: "cuit", icon: FileText, placeholder: "30-XXXXXXXX-X" },
-              { label: "Representante Legal", name: "representante", icon: User, placeholder: "Nombre completo" },
-              { label: "Rubro", name: "rubro", icon: Tag, placeholder: "Ej: Metalúrgico" },
-              { label: "Email", name: "email", icon: Mail, placeholder: "empresa@correo.com", type: "email" },
-              { label: "Teléfono", name: "telefono", icon: Phone, placeholder: "+54 2920..." },
-            ].map((f) => (
-              <div key={f.name} className="flex flex-col gap-2">
-                <label className="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1">
-                  {f.label}
-                </label>
-                <div className="relative group">
-                  <f.icon className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-green-600 dark:group-focus-within:text-green-500 transition-colors" size={20} />
-                  <input 
-                    required
-                    name={f.name}
-                    type={f.type || "text"}
-                    className="w-full pl-12 pr-4 py-4 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-2xl border border-slate-200 dark:border-slate-700 focus:ring-4 focus:ring-green-500/10 focus:border-green-500 outline-none transition-all placeholder:text-slate-400" 
-                    placeholder={f.placeholder}
-                  />
-                </div>
-              </div>
-            ))}
-            
-            <button 
-              type="submit"
-              disabled={loading}
-              className="md:col-span-2 mt-4 bg-green-600 hover:bg-green-700 disabled:bg-slate-400 text-white font-black text-xl py-5 rounded-2xl shadow-xl shadow-green-600/20 hover:shadow-green-600/40 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
-            >
-              {loading ? (
-                <>
-                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                  Procesando...
-                </>
-              ) : 'ENVIAR SOLICITUD FORMAL'}
-            </button>
-          </form>
+    <section id="contacto" className="py-32 bg-slate-100 dark:bg-slate-900 px-6 transition-colors duration-500">
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center mb-12">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-slate-900 dark:text-white tracking-tight">
+            Solicitud de Ingreso
+          </h2>
+          <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+            Complete el formulario para iniciar su radicación en el Parque Industrial Viedma.
+          </p>
+        </div>
 
+        <div className="bg-white dark:bg-slate-800/50 backdrop-blur-md shadow-2xl rounded-[2.5rem] border border-slate-100 dark:border-slate-800 overflow-hidden">
+          <form onSubmit={handleSubmit} className="p-8 md:p-12 space-y-8">
+            
+            {/* Razón Social y Estado de Empresa */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="md:col-span-2">
+                <label className={labelClasses}>Razón Social</label>
+                <input type="text" name="razonSocial" required className={inputClasses} onChange={handleChange} />
+              </div>
+              <div>
+                <label className={labelClasses}>Estado de Empresa</label>
+                <select name="tipoEmpresa" className={selectClasses} onChange={handleChange} value={formData.tipoEmpresa}>
+                  <option value="existente" className="dark:bg-slate-900">Empresa Existente</option>
+                  <option value="nueva" className="dark:bg-slate-900">Empresa Nueva</option>
+                </select>
+              </div>
+            </div>
+
+            {/* CUIT y Personal a Ocupar */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div>
+                <label className={labelClasses}>CUIT</label>
+                <input type="text" name="cuit" placeholder="00-00000000-0" required className={inputClasses} onChange={handleChange} />
+              </div>
+              <div>
+                <label className={labelClasses}>Personal a Ocupar (estimado)</label>
+                <input type="number" name="personalAOcupar" placeholder="Cantidad de empleados" required className={inputClasses} onChange={handleChange} />
+              </div>
+            </div>
+
+            {/* Rubro */}
+            <div>
+              <label className={labelClasses}>Rubro o Actividad Principal</label>
+              <input type="text" name="rubro" required className={inputClasses} onChange={handleChange} />
+            </div>
+
+            {/* Contacto */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div>
+                <label className={labelClasses}>Nombre Responsable</label>
+                <input type="text" name="contactoNombre" required className={inputClasses} onChange={handleChange} />
+              </div>
+              <div>
+                <label className={labelClasses}>Email</label>
+                <input type="email" name="email" required className={inputClasses} onChange={handleChange} />
+              </div>
+              <div>
+                <label className={labelClasses}>Teléfono</label>
+                <input type="tel" name="telefono" className={inputClasses} onChange={handleChange} />
+              </div>
+            </div>
+
+            {/* Descripción del Proyecto (Sin resize manual) */}
+            <div>
+              <label className={labelClasses}>Descripción del Proyecto Productivo</label>
+              <textarea 
+                name="descripcionProyecto" 
+                rows={4} 
+                required 
+                className={`${inputClasses} resize-none`} 
+                onChange={handleChange}
+              ></textarea>
+            </div>
+
+            {/* Superficie con Opción por Defecto "-" */}
+            <div className="flex flex-col md:flex-row md:items-end gap-8">
+              <div className="flex-1 max-w-[300px]">
+                <label className={labelClasses}>Superficie Requerida (m²)</label>
+                <select 
+                  name="superficieRequerida" 
+                  required 
+                  className={selectClasses} 
+                  onChange={handleChange}
+                  value={formData.superficieRequerida}
+                >
+                  <option value="" disabled className="dark:bg-slate-900 text-slate-400">- Seleccionar -</option>
+                  <option value="1250" className="dark:bg-slate-900">1250 m²</option>
+                  <option value="2000" className="dark:bg-slate-900">2000 m²</option>
+                  <option value="5000" className="dark:bg-slate-900">5000 m²</option>
+                </select>
+              </div>
+              
+              <div className="flex-1 text-right">
+                <button
+                  type="submit"
+                  className="w-full md:w-auto px-12 py-5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-2xl shadow-xl shadow-green-600/20 transition-all hover:-translate-y-1 active:scale-95 text-lg"
+                >
+                  Enviar Formulario
+                </button>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
     </section>
